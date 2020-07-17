@@ -4,8 +4,8 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 # opening the image
 image = Image.open("tnc_86887171.jpg")
+size = image.size
 print(image.format)
-print(image.size)
 print(image.mode)
 # saving it as a numpy array. it is three-dimensional
 matrix = np.array(image)
@@ -27,6 +27,9 @@ for tag_id in exifdata:
 # function to calculate the mean
 print(matrix[0][0])
 
+tmp = np.asarray([[[1, 2, 1], [4, 2, 13]], [[7, 8, 1], [8, 4, 5]]])
+
+
 def mean_cal(arr):
     sum = [0, 0, 0]
     a = arr.shape
@@ -39,10 +42,11 @@ def mean_cal(arr):
 
 # calculating the covariance matrix
 mean_vector = mean_cal(matrix)
+print("the mean vector is:")
 print(mean_vector)
 
 
-def covariance_cal(arr, mean):
+def b_matrix_cal(arr, mean):
     a = arr.shape
     for i in range(a[0]):
         for j in range(a[1]):
@@ -50,10 +54,12 @@ def covariance_cal(arr, mean):
             arr[i][j] = temp
 
 
-covariance_cal(matrix, mean_vector)
-print(matrix[0][0])
-transpose_matrix = matrix.transpose()
-print(transpose_matrix[0][0])
+b_matrix_cal(matrix, mean_vector)
+transpose_matrix1 = matrix.transpose(2, 0, 1).reshape(3, -1)
+transpose_matrix2 = transpose_matrix1.transpose()
+covariance_matrix = np.dot(transpose_matrix1, transpose_matrix2)
+print("the covariance matrix is:")
+print((1/(size[0]*size[1]-1)) * covariance_matrix)
 
 
 
